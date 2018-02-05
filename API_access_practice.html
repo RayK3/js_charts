@@ -1,118 +1,288 @@
 <!-- The secret key: 355c9574914c83b28623931d0c693e32 -->
+
 <!DOCTYPE = html>
+
 <html>
+
 <head>
+
   <title>Some Weather Information?</title>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
   <script>
+
     function request() {
+
       var xhttp = new XMLHttpRequest();
+
       xhttp.onreadystatechange = function() {
+
         if(this.readyState == 4 && this.status == 200) {
+
           var weather = JSON.parse(this.responseText);
+
           var weatherData = weather.hourly.data;
+
           var times = weatherData.map(e => e.time);
+
           var hours = times.map(e => {
+
             var options = { month: 'short', day: 'numeric'};
+
             var date =new Date(e * 1000);
+
             return date.toLocaleTimeString('en-us', options);
+
           });
+
+
 
           var temps = weatherData.map(e => e.temperature);
-          var datasets = [];
-          datasets.push({
+
+          var tempDatasets = [];
+
+          tempDatasets.push({
+
             label: 'Today\'s Temperature By Hour',
+
             data: temps
+
           })
-          createGraph(hours, datasets,'temp');
+
+          let tempGraph = createGraph(hours, tempDatasets,'temp');
 
           var hums = weatherData.map(e => e.humidity);
-          datasets = [];
-          datasets.push({
+
+          var humDatasets = [];
+
+          humDatasets.push({
+
             label: 'Today\'s Humidity By Hour',
+
             data: hums
+
           })
-          createGraph(hours, datasets, 'hum');
+
+          let humGraph = createGraph(hours, humDatasets, 'hum');
+
+
 
           var windGusts = weatherData.map(e => e.windGust);
+
           var windSpeeds = weatherData.map(e => e.windSpeed);
-          datasets = [];
-          datasets.push({
+
+          var windDatasets = [];
+
+          windDatasets.push({
+
             label: 'Wind Gusts',
+
             data: windGusts
+
           },
+
           {
+
             label: 'Wind Speeds',
+
             data: windSpeeds
+
           });
-          createGraph(hours, datasets, 'wind');
+
+          let windGraph = createGraph(hours, windDatasets, 'wind');
+
+          setInterval(graphUpdate(weatherData, tempGraph, humGraph, windGraph), 3000);
+
+
+
 
 
           // [{
+
           //   label: title,
+
           //   backgroundColor: gradient,
+
           //   data: data,
+
           // }]
 
-          console.log(weatherData);
 
         }
+
       };
+
       xhttp.open("GET","https://api.darksky.net/forecast/355c9574914c83b28623931d0c693e32/50.4452,104.6189?exclude=currently,minutely,daily,alerts,flags",true);
+
       xhttp.send();
+
     }
+
+
+
 
 
     function createGraph(labels, datasets, id) {
+
       var chart = document.getElementById(id).getContext('2d');
+
       var gradient = chart.createLinearGradient(0,0,0, 800);
+
       gradient.addColorStop(0, 'rgba(255, 150, 150, 1)');
+
       gradient.addColorStop(1, 'rgba(255, 255, 0, 1)');
 
-      datasets.forEach(e => e.backgroundColor = gradient);
 
-      new Chart(chart, {
+       let chartElement = new Chart(chart, {
+
         type: 'line',
+
         data: {
+
           labels: labels,
+
           datasets,
+
         },
+
         options: {},
 
+
+
       });
+      chartElement.data.backgroundColor = gradient;
+      return chartElement;
+
     };
+
+
     window.addEventListener('load', request);
-    var humidity = document.getElementById('hum');
-    console.log(humidity);
+
+    function graphUpdate(weatherData, tempGraph, humGraph, windGraph){
+      var temps = weatherData.map(e => e.temperature);
+
+      var tempDatasets = [];
+
+      tempDatasets.push({
+
+        label: 'Today\'s Temperature By Hour',
+
+        data: temps
+
+      })
+
+      tempGraph.data.datasets = tempDatasets;
+      tempGraph.update()
+
+
+
+      var hums = weatherData.map(e => e.humidity);
+
+      var humDatasets = [];
+
+      humDatasets.push({
+
+        label: 'Today\'s Humidity By Hour',
+
+        data: hums
+
+      })
+
+      humGraph.data.datasets = humDatasets;
+      humGraph.update();
+
+
+
+      var windGusts = weatherData.map(e => e.windGust);
+
+      var windSpeeds = weatherData.map(e => e.windSpeed);
+
+      var windDatasets = [];
+
+      windDatasets.push({
+
+        label: 'Wind Gusts',
+
+        data: windGusts
+
+      },
+
+      {
+
+        label: 'Wind Speeds',
+
+        data: windSpeeds
+
+      });
+
+    windGraph.data.datasets = windDatasets;
+    windGraph.update();
+    console.count();
+  }
+
+
+
   </script>
+
   <style>
+
     .temperature {
+
       padding: 25px;
+
     }
+
     .humidity {
+
       padding: 25px;
+
     }
+
     .temperature strong {
+
       color: rgb(80,30,30);
+
     }
+
     .humidity strong {
+
       color: blue;
+
     }
+
   </style>
+
 </head>
+
 <body>
+
   <div class="temperature">
+
     <strong>Temperature Data from the API</strong>
+
     <canvas id="temp"></canvas>
+
   </div>
+
   <div class="humidity">
+
     <strong >Humidity Data from the API</strong>
+
     <canvas id="hum"></canvas>
+
   </div>
+
   <div class="wind speeds">
+
     <strong >Wind Speeds and Gusts from the API</strong>
+
     <canvas id="wind"></canvas>
+
   </div>
+
   <a href="https://darksky.net/poweredby/">Powered by Dark Sky</a>
+
 <body>
+
 </html>
