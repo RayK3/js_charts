@@ -1,9 +1,15 @@
 <!-- The secret key: 355c9574914c83b28623931d0c693e32 -->
+
 <!DOCTYPE = html>
+
 <html>
+
 <head>
+
   <title>Some Weather Information?</title>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+
   <script>
 
     var graphs = {};
@@ -12,22 +18,36 @@
         arguments[0] = true;
       }
       var xhttp = new XMLHttpRequest();
+
       xhttp.onreadystatechange = function() {
+
         if(this.readyState == 4 && this.status == 200) {
+
           var weather = JSON.parse(this.responseText);
+
           var weatherData = weather.hourly.data;
 
           var times = weatherData.map(e => e.time);
+
           var hours = times.map(e => {
+
             var options = { month: 'short', day: 'numeric'};
+
             var date =new Date(e * 1000);
+
             return date.toLocaleTimeString('en-us', options);
+
           });
           var temps = weatherData.map(e => e.temperature);
-          var datasets = [];
-          datasets.push({
+
+          var tempDatasets = [];
+
+          tempDatasets.push({
+
             label: 'Today\'s Temperature By Hour',
+
             data: temps
+
           })
 
           if(firstCall) {
@@ -40,10 +60,15 @@
           }
 
           var hums = weatherData.map(e => e.humidity);
-          datasets = [];
-          datasets.push({
+
+          var humDatasets = [];
+
+          humDatasets.push({
+
             label: 'Today\'s Humidity By Hour',
+
             data: hums
+
           })
 
           if(firstCall) {
@@ -57,15 +82,25 @@
 
 
           var windGusts = weatherData.map(e => e.windGust);
+
           var windSpeeds = weatherData.map(e => e.windSpeed);
-          datasets = [];
-          datasets.push({
+
+          var windDatasets = [];
+
+          windDatasets.push({
+
             label: 'Wind Gusts',
+
             data: windGusts
+
           },
+
           {
+
             label: 'Wind Speeds',
+
             data: windSpeeds
+
           });
 
           if(firstCall) {
@@ -80,6 +115,7 @@
         }
       }
       xhttp.open("GET","https://api.darksky.net/forecast/355c9574914c83b28623931d0c693e32/50.4452,104.6189?exclude=currently,minutely,daily,alerts,flags",true);
+
       xhttp.send();
 
     };
@@ -89,8 +125,13 @@
       setTimeout(update, 5000);
     }
 
+
+
+
     function createGraph(labels, datasets, id) {
+
       var chart = document.getElementById(id).getContext('2d');
+
       var gradient = chart.createLinearGradient(0,0,0, 800);
       if(id === 'wind'){
         gradient.addColorStop(0, 'rgba(255, 150, 150, 0.3)');
@@ -104,46 +145,84 @@
 
       var graphElement = new Chart(chart, {
         type: 'line',
+
         data: {
+
           labels: labels,
+
           datasets,
+
         },
+
         options: {},
       });
       return graphElement;
     };
+
+
     window.addEventListener('load', request);
     window.addEventListener('load', graphUpdate);
 
   </script>
+
   <style>
+
     .temperature {
+
       padding: 25px;
+
     }
+
     .humidity {
+
       padding: 25px;
+
     }
+
     .temperature strong {
+
       color: rgb(80,30,30);
+
     }
+
     .humidity strong {
+
       color: blue;
+
     }
+
   </style>
+
 </head>
+
 <body>
+
   <div class="temperature">
+
     <strong>Temperature Data from the API</strong>
+
     <canvas id="temp"></canvas>
+
   </div>
+
   <div class="humidity">
+
     <strong >Humidity Data from the API</strong>
+
     <canvas id="hum"></canvas>
+
   </div>
+
   <div class="wind speeds">
+
     <strong >Wind Speeds and Gusts from the API</strong>
+
     <canvas id="wind"></canvas>
+
   </div>
+
   <a href="https://darksky.net/poweredby/">Powered by Dark Sky</a>
+
 <body>
+
 </html>
