@@ -2,6 +2,10 @@
 <html>
 <head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.3.1.slim.js"
+  integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
+  crossorigin="anonymous"></script>
 </head>
 <body>
 <canvas id="myChart" width="400" height="400"></canvas>
@@ -59,10 +63,38 @@ function makeGraph(data,labels){
       },
 
       options: {
-        cutoutPercentage: 70,
+        elements: {
+          arc: {
+            borderWidth: 0
+          }
+        }
       }
   });
+  console.log(document.getElementById("myChart").getContext('2d'));
+  var points = [
+    { x: 50,
+      y: 50 },
+    { x: 100,
+      y: 50 },
+    { x: 150,
+      y: 50},
+    { x: 200,
+      y: 50},
+    { x: 250,
+      y: 50}];
+  var ctx = document.getElementById("myChart").getContext('2d');
+  $.each (points, function (k, v)
+        {
+            ctx.beginPath();
+            ctx.moveTo(v.x, v.y);
+            ctx.lineWidth = 3;
+            ctx.strokeStyle = '#ff0000';
+            ctx.lineTo(0, v.y);
+            ctx.stroke();
+            console.log("*");
+         });
 }
+
 
 window.addEventListener('load', makeGraph(counts, words, bgColors));
 </script>

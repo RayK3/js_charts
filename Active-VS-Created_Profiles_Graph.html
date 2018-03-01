@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <script>
+    var activeProfilesByDate = [
+      {
+        date: 'Monday',
+        count: 40,
+      },
+      {
+        date: 'Tuesday',
+        count: 38,
+      },
+      {
+        date: 'Wednesday',
+        count: 53,
+      },
+      {
+        date: 'Thursday',
+        count: 25,
+      },
+      {
+        date: 'Friday',
+        count: 38,
+      }
+    ];
+
+  
+    var totalProfilesByDate = [
+      {
+        date: 'Monday',
+        count: 2
+      },
+      {
+        date: 'Tuesday',
+        count:3
+      },
+      {
+        date: 'Wednesday',
+        count: 6
+      },
+      {
+        date: 'Thursday',
+        count: 10
+      },
+      {
+        date: 'Friday',
+        count: 16
+      }
+    ];
+
+    var createdProfilesByDate = totalProfilesByDate.map((e, i, a) => {
+      var newOnDate = {};
+      newOnDate.date = e.date;
+      if(e === a[0]) {
+        newOnDate.count = e.count
+      } else {
+        newOnDate.count = e.count - a[i-1].count;
+      }
+
+      return newOnDate;
+    });
+
+
+    var dates = activeProfilesByDate.map(e => e.date);
+    var activeProfiles = activeProfilesByDate.map(e => e.count);
+    var createdProfiles = createdProfilesByDate.map(e => e.count);
+
+    function drawGraph(canvasId, labels, data1, data2) {
+      var ctx = document.getElementById(canvasId).getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Created Profiles',
+              backgroundColor: 'rgb(38, 242, 44)',
+              data: data1
+            },
+            {
+              label: 'Active Profiles',
+              backgroundColor: 'rgb(38, 133, 242)',
+              data: data2
+            }
+          ]
+        },
+        options: {}
+      })
+    };
+
+    window.onload = function () {
+      return drawGraph('Active_VS_Created_Profiles', dates, createdProfiles, activeProfiles);
+    };
+  </script>
+</head>
+<body>
+  <canvas id="Active_VS_Created_Profiles"></canvas>
+</body>
+</html>

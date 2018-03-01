@@ -1,0 +1,363 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+
+		<title>main</title>
+		<div><!-- Compiled and minified CSS --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" />
+
+ <!-- Compiled and minified JavaScript -->
+ <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+
+  <script type="text/javascript" src="/assets/js/jquery.simple-dtpicker.js"></script>
+  <link type="text/css" href="/assets/css/jquery.simple-dtpicker.css" rel="stylesheet" />
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.js"></script>
+
+  <link rel="stylesheet" href="//assets-cdn.ziggeo.com/v1-stable/ziggeo.css" />
+	<script src="//assets-cdn.ziggeo.com/v1-stable/ziggeo.js"></script>
+
+	<script>
+		let rest_endpoint="http://45.77.106.85:8080/rest/v1/videos";
+		//let rest_endpoint="http://localhost:8080/rest/v1/videos";
+		ZiggeoApi.token = "ddd4366d3fc0baef95c333fa575c53f9";
+	</script>
+
+
+
+<style>
+body {
+	background-position: center top;
+	background-color:  #e0e0e0;
+}
+</style></div>
+	</head>
+
+	<body>
+
+		<div><nav>
+    <div class="nav-wrapper green accent-4">
+
+
+    <span>aa@aa.aa</span>
+				<span class="">[ROLE_ADMIN]</span>
+
+
+
+      <ul id="nav-mobile" class="right">
+
+
+        <li class=""><a href="/user/main"><i class="large material-icons">home</i></a></li>
+        <li class=" "><a href="/user/keyword">Keywords</a></li>
+        <li class=" "><a href="/user/sentiment">Sentiment</a></li>
+        <li class=" "><a href="/user/video">Videos</a></li>
+
+
+
+
+
+        <li>
+        	 <!-- Dropdown Trigger -->
+			<a class="dropdown-button btn-small black accent-4" href="#" data-activates="dropdown1" data-hover="true" data-belowOrigin="true">
+			  	<i class="large material-icons">arrow_drop_down</i>
+
+			</a>
+
+			  <!-- Dropdown Structure -->
+
+			  <ul id="dropdown1" class="dropdown-content green accent-4">
+			  	<li><a class="white-text" href="/logout"><i class="large material-icons">launch</i>sign out</a></li>
+        		<li><a class="white-text" href="/change_password_form"><i class="large material-icons">settings</i>password</a></li>
+
+
+	        		<span>
+		        		<li>
+							<a class="white-text" href="/admin/main"><i class="large material-icons">link</i>admin</a>
+						</li>
+					</span>
+
+			  </ul>
+
+        </li>
+
+
+      </ul>
+    </div>
+</nav>
+
+
+
+
+
+
+
+
+</div>
+
+		<div class="row">
+	      	<div class="col s10 offset-s1">
+
+				<section>
+
+		<div class="row">
+	      	<div class="col s6">
+
+	      		<h2 class="thin green-text">Most powerful positive statement</h2>
+	      		<p class="light">Joe is in for good Canadian Christmas gift a good time this year I would suggest Wayne Gretzky Number nine I need whiskey obviously grabbed your huge call and so it came with the ADD It&#39;s really good ...</p>
+	      		<p class="chip green">0.8999999761581421</p>
+
+
+	      	</div>
+
+	      	<div class="col s6">
+
+	      		<h2 class="thin red-text">Most powerful negative statement</h2>
+				<p class="light">In this final section in the testing part of the of the training I want to talk about doing transactional tests now in my current application we really don&#39;t have anything that needs that after this s...</p>
+	      		<p class="chip red">-0.800000011920929</p>
+
+
+
+	      	</div>
+
+	    </div>
+
+		<div class="row">
+	      	<div class="col s12">
+
+	      		<h2 class="thin">Highest and lowest sentiments</h2>
+
+	      		<canvas id="highSentChart"></canvas>
+	      	</div>
+
+	    </div>
+
+	<div class="row">
+		<div class="col s6">
+					<h2 class="thin green-text">10 most frequent positive words</h2>
+					<p>
+						<canvas id="myChartPos"></canvas>
+					</p>
+
+
+		</div>
+
+		<div class="col s6">
+
+					<h2 class="thin red-text">10 most frequent negative words</h2>
+					<p>
+						<canvas id="myChartNeg"></canvas>
+					</p>
+
+
+		</div>
+	</div>
+
+	<div class="row">
+
+		<div class="col s6">
+
+			<h2 class="thin green-text">5 most positive videos</h2>
+			<div class="row">
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/91cd0160-a031-4b60-a5d7-ee397d2612e4">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  green-text">Sentiment: 2.90</span>
+
+	              <div class="">I know it&#39;s I who should use in rej...</div>
+
+	               	<p class="">Wed Jan 17 19:17:08 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/0f43e75f-b847-440e-aef2-ecab2a6eb996">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  green-text">Sentiment: 2.90</span>
+
+	              <div class="">Wanted to do a quick recognition on...</div>
+
+	               	<p class="">Thu Jan 18 17:10:17 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/d2e81b6f-a685-461d-82d2-85aafe342902">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  green-text">Sentiment: 2.90</span>
+
+	              <div class="">What I have here is the better Olme...</div>
+
+	               	<p class="">Fri Jan 19 00:03:50 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/0fc945ed-066e-4be3-be24-a9dd22aed561">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  green-text">Sentiment: 2.80</span>
+
+	              <div class="">New York but it&#39;s here in blue show...</div>
+
+	               	<p class="">Thu Jan 18 18:56:04 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/8ccbaa38-55c8-41a5-a78e-574d0b9697e3">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  green-text">Sentiment: 2.80</span>
+
+	              <div class="">This is my first time ever trial pr...</div>
+
+	               	<p class="">Mon Jan 22 18:57:06 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+	        </div>
+
+        </div>
+
+
+
+		<div class="col s6">
+
+			<h2 class="thin red-text">5 most negative videos</h2>
+			<div class="row">
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/0ac34608-5aa0-438c-abdd-fe54ede6f465">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  red-text">Sentiment: 1.40</span>
+
+	              <div class="">You can&#39;t teach an old dog new tric...</div>
+
+	               	<p class="">Wed Jan 03 20:53:15 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/3b85b810-c309-412a-b9a1-b77a9ce780c9">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  red-text">Sentiment: 1.60</span>
+
+	              <div class="">What this is the sound loop by I fo...</div>
+
+	               	<p class="">Sun Jan 21 15:02:41 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/790cc2a8-c28d-4256-94e8-7e9eb75f1660">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  red-text">Sentiment: 1.60</span>
+
+	              <div class="">They are in a very cranky and I&#39;m a...</div>
+
+	               	<p class="">Sat Jan 20 23:27:17 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/6a7c5932-d998-4b78-b0f8-ae465f34cc35">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  red-text">Sentiment: 1.70</span>
+
+	              <div class="">In this final section in the testin...</div>
+
+	               	<p class="">Fri Jan 19 17:55:39 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+		    <div class="col s12">
+	          <div class="card white ">
+	          <a href="/video/861e7194-f912-4c8a-878c-6f8af7fd9cc2">
+	            <div class="card-content black-text">
+	                      	<span class="card-title  red-text">Sentiment: 1.80</span>
+
+	              <div class="">In this section I want to give you ...</div>
+
+	               	<p class="">Wed Jan 17 20:10:05 UTC 2018</p>
+
+
+
+	            </div>
+	           </a>
+	          </div>
+	        </div>
+	        </div>
+
+        </div>
+	</div>
+
+
+
+	<script src="website.js"></script>
+	<script src="website2.js"></script>
+
+
+	</section>
+
+			</div>
+		</div>
+
+
+		<div>
+
+
+</div>
+
+
+
+
+	</body>
+</html>

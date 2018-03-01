@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Profile Count Graph</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <script>
+
+
+  var totalProfilesByDate = [
+    {
+      date: 'today',
+      count: 2
+    },
+    {
+      date: 'tomorrow',
+      count:3
+    },
+    {
+      date: 'the next day',
+      count: 6
+    },
+    {
+      date: 'three days from now',
+      count: 10
+    },
+    {
+      date: 'saturday',
+      count: 16
+    }
+  ];
+
+
+  var dates = totalProfilesByDate.map(e => e.date);
+  var counts = totalProfilesByDate.map(e => e.count);
+
+  function createGraph(id, labels, data) {
+    var ctx = document.getElementById(id).getContext('2d');
+    var gradient = ctx.createLinearGradient(0, 0, 0, 592);
+    gradient.addColorStop(0, 'rgb(208, 15, 208)');
+    gradient.addColorStop(1, 'rgb(162, 11, 11)');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Counts By Date',
+          backgroundColor: gradient,
+          data: data,
+        }]
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true,
+            }
+          }]
+        }
+      }
+    });
+  }
+
+  window.onload = function() { return createGraph('myChart', dates, counts)};
+
+  </script>
+</head>
+<body>
+  <canvas id="myChart"></canvas>
+</body>
+</html>

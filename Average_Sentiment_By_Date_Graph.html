@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.min.js"></script>
+  <script>
+    var averageSentsByDate = [
+      {
+        date: 'today',
+        aveSent: 1.9999999999
+      },
+      {
+        date: 'tomorrow',
+        aveSent: 0.9898989898
+      },
+      {
+        date: 'the next day',
+        aveSent: -1.999866222
+      },
+      {
+        date: 'the day after',
+        aveSent: -1.583792834
+      },
+      {
+        date: 'the day after that',
+        aveSent: 0.7483793847
+      }
+    ];
+
+    var dates = averageSentsByDate.map(e => e.date);
+    var averageSents = averageSentsByDate.map(e => e.aveSent);
+
+    function drawGraph(id, labels, data) {
+      var ctx = document.getElementById(id).getContext('2d');
+      var gradient = ctx.createLinearGradient(0, 0, 0, 582);
+      gradient.addColorStop(0, 'rgb(50, 200, 50)');
+      gradient.addColorStop(0.5, 'rgb(100, 100, 100)');
+      gradient.addColorStop(1, 'rgb(200, 50, 50)');
+
+      var aveSentChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Average Sentiments By Date',
+            backgroundColor: gradient,
+            data: data
+          }]
+        },
+        options: {}
+      })
+    }
+
+    window.onload = function() { return drawGraph('AverageSentByDate', dates, averageSents); }
+  </script>
+</head>
+<body>
+  <canvas id="AverageSentByDate"></canvas>
+</body>
+</html>
