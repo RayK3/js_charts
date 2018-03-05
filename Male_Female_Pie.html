@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+  <script>
+
+    var percentFemale = 40;
+    var percentMale = 40;
+    var percentX = 100 - percentMale - percentFemale;
+
+    var labels = ['Female Profile Percentage', 'Male Profile Percentage', 'Other/Unknown Profile Percentage'];
+    var percentages = [percentFemale, percentMale, percentX];
+
+    console.log(percentages);
+
+    function graph(id, labels, data) {
+      var ctx = document.getElementById(id).getContext('2d');
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          datasets: [{
+            data: data,
+            backgroundColor: ['rgb(255, 150, 180)', 'rgb(115, 170, 230)', 'rgb(150, 150, 150)']
+          }],
+          labels: labels,
+        }
+      });
+    }
+
+    window.onload = function() { return graph('Gender Pie', labels, percentages)};
+  </script>
+</head>
+<body>
+  <canvas id="Gender Pie"></canvas>
+</body>
+</html>
