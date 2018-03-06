@@ -23,7 +23,7 @@ function createDotSize(arrayLength) {
 function redGreenCalc(sentiment, opacity) {
   var green = Math.floor((sentiment / 10) * 255);
 
-  var red = Math.floor(((sentiment * -1 + 10) / 10) * 255);
+  var red = Math.floor(((sentiment - 10) / -10) * 255);
   //return 'rgba(' + red +', ' + green + ', 0, 1)';
 
  return 'rgba(' + red +', ' + green + ', 100, ' + opacity + ')';
