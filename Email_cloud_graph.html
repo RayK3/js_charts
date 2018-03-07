@@ -7,6 +7,8 @@ function Email() {
   var obj = {};
   obj.date = Math.floor(Math.random() * 4000000) + 1520350000000;
   obj.sent = (Math.random() * 10).toFixed(1);
+  obj.sentBy = 'Me';
+  obj.receivedBy = 'You';
   return obj;
 }
 
@@ -31,13 +33,9 @@ function redGreenCalc(sentiment, opacity) {
 
 var emails = [];
 
-emails.push({date: 1520350000000, sent: 10});
-
 for(var i = 0; i < 500; i++) {
   emails.push(new Email());
 }
-
-emails.push({date: 1520354000001, sent: 0});
 
 emails.sort(function(a, b) {
   if(a.date > b.date) {
@@ -57,6 +55,9 @@ var borderColors = emails.map(function(email) {
 
 var dates = emails.map(e => e.date);
 var sents = emails.map(e => e.sent);
+var senders = emails.map(e => e.sentBy);
+var receivers = emails.map(e => e.receivedBy);
+
 
 function graph(id) {
   var ctx = document.getElementById(id).getContext('2d');
@@ -74,6 +75,34 @@ function graph(id) {
       }]
     },
     options: {
+      tooltips: {
+        callbacks: {
+          beforeTitle: function(tooltipItem, data) {
+            return 'This is before the title.';
+          },
+          title: function(tooltipItem, data) {
+            var datasetIndex = tooltipItem[0].datasetIndex;
+            var index = tooltipItem[0].index;
+            return "The sentiment was: " + data.datasets[datasetIndex].data[index];
+          },
+          beforeLabel: function(tooltipItem, data) {
+            var datasetIndex = tooltipItem.datasetIndex;
+            return [ 'Sent by ' + senders[datasetIndex], 'Received by ' + receivers[datasetIndex], ];
+          },
+          label: function(tooltipItem, data) {
+            var datasetIndex = tooltipItem.datasetIndex;
+
+            return "On " + new Date(data.labels[datasetIndex]).toDateString();
+          },
+          labelColor: function(tooltipItem, chart) {
+            return {
+              borderColor: 'red',
+              backgroundColor: 'blue'
+            };
+          },
+          footer: (tooltipItem, chart) => 'This is the footer',
+        }
+      },
       scales: {
         xAxes: [{
           display: false
