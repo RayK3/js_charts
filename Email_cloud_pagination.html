@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+</head>
+<body>
+<script>
+
+function renderActiveCreatedCounts() {
+  function redGreenCalc(sentiment, opacity) {
+		  var green = Math.floor((sentiment / 10) * 255);
+		  var red = Math.floor(((sentiment - 10) / -10) * 255);
+		 return 'rgba(' + red +', ' + green + ', 100, ' + opacity + ')';
+	};
+
+  var isCreated = false;
+	var index = 0;
+	var size = 20;
+  var maxIndex = 50;
+
+	var emails = [];
+
+  var chart;
+
+	function getData(index, size){
+		  var xhttp = new XMLHttpRequest();
+			xhttp.onreadystatechange = function() {
+					if(this.readyState === 4 && this.status === 200) {
+						// var element = document.getElementById("email_cloud_spinner");
+						// element.parentNode.removeChild(element);
+
+					  var newEmails = JSON.parse(this.responseText);
+						emails.unshift(...newEmails);
+						emails.forEach((email, index, arr) => {
+							if(index === 0) {
+								console.log('first email\n\n');
+						  } else {
+								console.log(new Date(email.sent * 1000).toDateString());
+							}
+						});
+	          renderGraph(newEmails);
+
+					}
+			}
+		  xhttp.open("GET", "http://45.77.106.85:8080/rest/v1/email/alls?index=" + index + "&size=" + size, true); xhttp.send();
+	}
+
+	function renderGraph(newEmails) {
+
+		if(!isCreated) {
+			var dates = emails.map(e => new Date(e.sent * 1000).toDateString());
+	//					var sents = emails.map(e => e.sentiment);
+
+			var sents = emails.map(e => Math.random() * 10);
+
+
+			isCreated = true;
+
+			var ctx = document.getElementById("email_cloud").getContext('2d');
+			chart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: dates,
+					datasets: [{
+						data: sents,
+						showLine: false,
+						pointBackgroundColor: sents.map(function(s) {
+								return redGreenCalc(s, 0.7);
+							}),
+						pointBorderColor: "white",
+						pointBorderWidth: 0,
+						pointRadius: 5, // createDotSize(emails.length),
+						pointHitRadius: 200, // set as you wish
+						pointHoverRadius: 15,
+						pointHoverBorderWidth: 0,
+						pointHoverBorderColor: "rgba(70, 70, 150, 0.3)",
+						pointHoverBackgroundColor: "rgba(70, 70, 150, 0.7)",
+
+					}]
+				},
+				options: {
+
+
+
+
+					 onClick:  function(e, array){
+						 let index = array[0]._index;
+						 console.log(emails[index]);
+						 window.location.href="/email/"+emails[index].id;
+							 },
+
+					hover: {
+						mode: 'nearest',
+					intersect: true },
+					responsive: true,
+					tooltips: {
+							mode: 'nearest',
+							intersect: false,
+							callbacks: {
+
+										 title: function(tooltipItem, data) {
+												 var datasetIndex = tooltipItem[0].datasetIndex;
+												 var index = tooltipItem[0].index;
+												 return ["From:",
+																emails[index].fromEmail,
+															emails[index].fromName,
+															"To: ",
+															emails[index].toEmail,
+															emails[index].toName,
+														 "Sentiment:",
+															data.datasets[datasetIndex].data[index] ];
+											 },
+											 label: function(tooltipItem, data) { return "" },
+
+							}
+
+
+					},
+					legend: { display: false },
+				layout: { padding: 20 },
+				elements: {
+							point: { pointStyle: "circle" } ,
+						line: { tension: 0 }},
+					scales: {
+						xAxes: [{
+							display: false  }]}
+				}
+			});
+
+		} else {
+			var newLabels = [];
+			var newData = [];
+			var newBackgroundColors = [];
+
+			newEmails.forEach(function(newEmail) {
+				var sentiment = Math.random() * 10;
+				newLabels.push(new Date(newEmail.sent * 1000).toDateString());
+				newData.push(sentiment);
+				newBackgroundColors.push(redGreenCalc(sentiment, 0.7));
+			});
+
+			chart.data.labels.unshift(...newLabels);
+			chart.data.datasets[0].data.unshift(...newData);
+			chart.data.datasets[0].pointBackgroundColor.unshift(...newBackgroundColors);
+
+
+		chart.update();
+
+		}
+		index++;
+		if(index < maxIndex) {
+			setTimeout(() => getData(index, size), 1000);
+		} else {
+			console.log('maximum size reached');
+		}
+		//end of renderGraph
+	}
+
+
+	getData(index, size);
+	//end of renderActiveCreatedCounts
+}
+
+window.addEventListener("load", () => renderActiveCreatedCounts() );
+
+</script>
+<canvas id="email_cloud"></canvas>
+</body>
+</html>
