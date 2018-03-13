@@ -31,13 +31,7 @@ function renderActiveCreatedCounts() {
 
 					  var newEmails = JSON.parse(this.responseText);
 						emails.unshift(...newEmails);
-						emails.forEach((email, index, arr) => {
-							if(index === 0) {
-								console.log('first email\n\n');
-						  } else {
-								console.log(new Date(email.sent * 1000).toDateString());
-							}
-						});
+						//emails arent explicitly used anywhere
 	          renderGraph(newEmails);
 
 					}
