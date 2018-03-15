@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+  <script>
+  function renderActiveCreatedCounts(index) {
+    var currentIndex = index;
+    var isCreated = false;
+    var chart;
+    var maxIndex = 50;
+    var minIndex = 0;
+    function getData(index) {
+  	  var xhttp = new XMLHttpRequest();
+  		xhttp.onreadystatechange = function() {
+
+  			if(this.readyState === 4 && this.status === 200) {
+  				  var data = JSON.parse(this.responseText);
+  				  data = data.slice(0, 30);
+
+  	    var createdProfilesByDate = data.map((e, i, a) => {
+  	      var newOnDate = {};
+  	      newOnDate.date = e.date;
+  	      if(e === a[0]) {
+  	        newOnDate.count = e.count;
+  	      } else {
+  	        newOnDate.count = e.count - a[i-1].count;
+  	      }
+  	      return newOnDate;
+  	    });
+
+        createdProfilesByDate.shift();
+        data.shift();
+
+  	    var dates = data.map(e => new Date(e.date * 1000).toDateString().split(" ").slice(1, 3).join('-'));
+  	    var activeProfiles = data.map(e => e.active);
+  	    var createdProfiles = createdProfilesByDate.map(e => e.count);
+  	    var averageSents = data.map(e => e.averageSentiment + (Math.random() * 2));
+  	    var counts = data.map(e => e.count);
+
+        if(!isCreated) {
+          console.log('Drawing the graph for the first time');
+  	      drawGraph(dates, counts, activeProfiles, averageSents, createdProfiles);
+        } else {
+          console.log('Updating Chart');
+          chart.data.labels = dates;
+          chart.data.datasets[0].data = averageSents;
+          chart.data.datasets[1].data = createdProfiles;
+          chart.data.datasets[2].data = activeProfiles;
+          chart.update();
+        }
+
+  		}}
+
+  		xhttp.open("GET", "http://45.77.106.85:8080/rest/v1/business/profile_day_statss?index=" + index + "&size=30", true); xhttp.send();
+    }
+
+      function drawGraph(labels, counts, activeProfiles, aveSentiment, createdProfiles) {
+        isCreated = true;
+        var ctx = document.getElementById("activeCreated").getContext('2d');
+        var gradient = ctx.createLinearGradient(0, 0, 0, 592);
+        gradient.addColorStop(0, 'rgb(208, 15, 208, 0.5)');
+        gradient.addColorStop(1, 'rgb(162, 11, 11, 0.5)');
+
+        chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [
+
+              {
+                  label: 'Sentiment',
+              fill: false,
+                  backgroundColor:  "red",
+              borderColor: "red",
+//						 showLine: false, // no line shown
+              data: aveSentiment,
+              pointRadius: 5,
+              pointStyle: "crossRot",
+              tension: 0.3,
+              borderWidth: 1,
+
+                 },{
+                    label: 'Created',
+//							  fill: false,
+                    backgroundColor:  "rgba(0, 0, 200, 0.5)",
+                borderColor: "rgba(0, 0, 200, 0)",
+                data: createdProfiles,
+                pointRadius: 1,
+
+                   },
+              {
+                label: 'Active',
+                backgroundColor: "rgba(200, 0, 0, 0.5)",
+          borderColor: "rgba(200, 0, 0, 0)",
+          pointRadius: 1,
+                data: activeProfiles
+              },
+
+            ]
+          },
+          options: {
+
+
+            tooltips: {
+          mode: 'index',
+          intersect: false,
+        },
+          legend: { display: false },
+          maintainAspectRatio: false,
+          spanGaps: false,
+          elements: {
+            line: {
+              tension: 0
+            }
+          },
+          scales: {
+            yAxes: [{
+              stacked: false
+            }]
+          },
+          plugins: {
+            filler: {
+              propagate: false
+            },
+            'samples-filler-analyser': {
+              target: 'chart-analyser'
+            }
+          }
+
+           }
+         })
+      };
+
+    getData(index);
+
+
+    var earlierButton = document.getElementById("earlierButton");
+    var laterButton = document.getElementById("laterButton");
+
+    earlierButton.addEventListener('click', function() {
+      if(currentIndex < 50) {
+        currentIndex++;
+        getData(currentIndex);
+      } else {
+        console.log('Index is too large');
+      }
+    });
+
+    laterButton.addEventListener('click', function() {
+      if(currentIndex > 0) {
+        currentIndex--;
+        getData(currentIndex);
+      } else {
+        console.log('This is the most recent data');
+      }
+    });
+  };
+
+	window.addEventListener("load", () => renderActiveCreatedCounts(0) );
+  </script>
+</head>
+<body>
+  <canvas id="activeCreated"></canvas>
+  <span>
+    <button id="earlierButton">&lt;</button>
+    <button id="laterButton">&gt;</button>
+  </span>
+</body>
+</html>
